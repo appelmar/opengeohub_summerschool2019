@@ -7,7 +7,7 @@ Analyzing large collections of satellite imagery is inherently complex: images m
 
 The tutorial will introduce the basic concepts and usage of the R package, demonstrating how raster data cubes can be created and processed. In the demonstration part, we will look in detail at the parameters of data cubes and available operations. We will process different datasets e.g. from the Sentinel-2, Landsat 8, and MODIS missions with size up to a few hundred gigabytes. In the practical part, participants work on smaller exercises using a downsampled Landsat 8 time series, covering a small part of the Brazilian Amazon forest.
 
-## Installation instructions: 
+## Installation Instructions 
 
 1. Install R and the following packages from CRAN: `install.packages(c("gdalcubes", "magrittr", "raster", "stars", "mapview", "viridis"))`
 
@@ -23,7 +23,7 @@ The tutorial will introduce the basic concepts and usage of the R package, demon
 
 
 
-## References:
+## References
 
 - https://www.r-spatial.org/r/2019/07/18/gdalcubes1.html
 
