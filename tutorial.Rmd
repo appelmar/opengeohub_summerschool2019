@@ -52,10 +52,10 @@ unzip("L8_Amazon.zip", exdir = "L8_Amazon")
 ```
 
 
----------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------
 
 
-# Part I: Creating Data Cubes from Satellite Image Collections
+# Part I: Creating, Visualizing, and Exporting Data Cubes from Satellite Image Collections
 
 
 
@@ -64,7 +64,7 @@ unzip("L8_Amazon.zip", exdir = "L8_Amazon")
 
 Raw satellite imagery is mostly distributed as collection of files, whether on download portals of space agencies, or in cloud computing environments (Amazon Web Services, Google Cloud, ...). If we want to analyze more than a single image, or even images from multiple satellites, we quickly run into the following challenges: 
 
-- spectral bands at spatial resolutions 
+- spectral bands at different spatial resolutions 
 - spatially overlapping images
 - irregular time series for pixels from different tiles (or in overlapping areas)
 - different spatial reference systems of images
@@ -157,20 +157,17 @@ This opens all provided files once, reads some relevant metadata (spatial extent
 collection_formats()
 ```
 
+The number of available formats is still rather limited, but continues to grow and is extensible (using `add_collection_format()`). In fact, a collection format is a single JSON (JavaScript Object Notation) file, describing some rules how to extract e.g. date/time, and bands from filenames (examples at https://github.com/appelmar/gdalcubes_formats). Writing collection formats for your own non-standard datasets is not too difficult and documented [here](https://gdalcubes.github.io/docs/collection_formats.html).
+
+In our example, we used the predefined format `"L8_SR"` for Landsat 8 surface reflectance data as downloaded from the [USGS portal](https://espa.cr.usgs.gov).
+
+The creation of image collections is typically done only once. We can add images to an existing collection with  `add_images()`. 
+
 We can extract the spatiotemporal extent of the collection with:
 
 ```{r L8extent}
 extent(L8.col, srs="EPSG:4326")
 ```
-The number of available formats is still rather limited, but continues to grow and is extensible (using `add_collection_format()`). In fact, a collection format is a single JSON (JavaScript Object Notation) file, describing some rules how to extract e.g. date/time, and bands from filenames (examples at https://github.com/appelmar/gdalcubes_formats). Writing collection formats for your own non-standard datasets is not too difficult and documented [here](https://gdalcubes.github.io/docs/collection_formats.html).
-
-In our example, we used the predefined format `"L8_SR"` for Landsat 8 surface reflectance data as downloaded from the [USGS portal](https://espa.cr.usgs.gov).
-
-
-
-The creation of image collections is typically done only once. We can add images to an existing collection with  `add_images()`. 
-
-
 
 
 
@@ -253,12 +250,12 @@ plot(select_bands(L8.cube.subarea, c("B02", "B03", "B04")), rgb=3:1, zlim=c(0,15
 Notice that we can also plot bands individually, creating a two-dimensional plot layout of bands and time. Using `key.pos = 1`, and `col= viridis::viridis`, we plot a legend at the bottom of the plot, and use the viridis color scales (this requires the viridis package). 
 
 
-```{r L8plot2}
+```{r L8plot2, message=FALSE}
 plot(L8.cube.overview.rgb, zlim=c(0,1500), key.pos=1, col=viridis::viridis, t=2:5) 
 plot(select_bands(raster_cube(L8.col,view = v.subarea.60m), c("B05")),col=viridis::viridis,  zlim=c(0,6000), key.pos=1)
 ```
 
-Plotting an identical data cube twice, different with visualization arguments `zlim`, `col`, and others will not need to reprocess the data cube again. `plot()` internally writes netCDF files to a temporary directory and remembers that a specific cube is already available.
+Plotting an identical data cube twice, with different isualization arguments `zlim`, `col`, and others will not need to reprocess the data cube again. `plot()` internally writes netCDF files to a temporary directory and remembers that a specific cube is already available.
 
 The `plot()` function also considers different types of data cubes. For example, if the number of cells in x and y direction equals one, we get a simple time series plot, as we will see later in this tutorial.
 
@@ -275,7 +272,7 @@ animate(select_bands(raster_cube(L8.col, v.subarea.60m), c("B02","B03","B04")), 
 
 ## Exporting Data Cubes to Disk
 
-Sometimes we want to process data cubes further, e.g. with external software. We can export data cubes either as single netCDF files, or as a collection of GeoTIFF files, where each time-slice of the cube will be stored as one (multiband) file.
+Sometimes we want to process data cubes further, e.g. with external software. We can export data cubes either as single netCDF files, or as a collection of GeoTIFF files, where each time-slice of a cube will be stored as one (multiband) file.
 
 Both, netCDF and GeoTIFF export support *compression*, and *packing* (converting double precision numeric values to smaller integer types by applying an offset and scale) to reduce the file size if needed (see documentation at `?write_ncdf`, and `?write_tif`).
 
@@ -377,7 +374,7 @@ The `chunking` argument defines the size of data cube chunks as a vector with th
 The gdalcubes package comes with some built-in operations on data cubes. The following operations produce a derived data cube from one or more input data cubes.
 
 | Operator | Description |
-|----------|-------------|
+|----------|------------------------------------------------------------------------------------|
 | `apply_pixel` | Apply arithmetic expressions on band values per pixel.   |
 | `fill_time` |   Fill missing values by simple time-series interpolation.   |
 | `filter_pixel` | Filter pixels based on logical expressions.            |
@@ -709,22 +706,19 @@ Though gdalcubes works with quite a few datasets directly, others require additi
 
 gdalcubes can work directly in cloud computing environments. It uses GDAL to read images and hence can use GDAL's virtual file systems to access data on object storage (e.g. AWS S3 buckets). Processing cubes in distributed (cloud) computing environments is a bit more difficult and is current work in progress. 
 
-gdalcubes is a pretty young tool, there are many ideas still to be implemented (e.g. Python interface, user-defined function support for further operations, interfacing image processing library such as Orfeo Toolbox, using gdalcubes as a fully open source [OpenEO](https://openeo.org/) backend, ...).  
+gdalcubes is a pretty young tool, there are many ideas still to be implemented (e.g. Python interface, user-defined function support for further operations, interfacing image processing libraries such as Orfeo Toolbox, using gdalcubes as a fully open source [OpenEO](https://openeo.org/) backend, ...).  
 
 If you have further ideas, questions, or would like to contribute in any other way, please just ask me, or create issues at [GitHub](https://github.com/appelmar/gdalcubes_R).
 
 
 
 
--------------------------------------------------------------------------------------------------------------------------------------------
-
-
+-------------------------------------------------------------------------------
 
 # Exercises (ii)
 
 
-1. Use the downsampled Landsat dataset from the first exercises, the data cube view and mask below, and create a data cube for a spatial subarea. Y
-
+1. Use the downsampled Landsat dataset from the first exercises and create a data cube for a spatial subarea (use the data cube view and mask below).
 
 ```
 v.subarea = cube_view(extent=list(left=-6320000, right=-6220000, bottom=-600000, top=-500000, 
@@ -740,7 +734,7 @@ L8.clear_mask = image_mask("PIXEL_QA", values=
 
 3. Compute minimum, maximum, median, and mean NDMI values over time and plot the result.
 
-4. Calculate the NDVI as in the tutorial, and apply a user defined reducer function to create a "greenest pixel" composit image, by finding the time of the maximum NDVI, and returning the RGB values at that time. 
+4. Calculate the NDVI as in the tutorial, and apply a user defined reducer function to create a "greenest pixel" composit image, by finding the date/time of the maximum NDVI, and returning the corresponding RGB values. 
 
 
 
