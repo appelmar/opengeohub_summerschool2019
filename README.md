@@ -1,6 +1,5 @@
 # Processing Large Satellite Image Collections as Data Cubes with the gdalcubes R package
 
---- 
 
 *Workshop materials for OpenGeoHub Summer School 2019*
 
@@ -25,6 +24,8 @@ The tutorial will introduce the basic concepts and usage of the R package, demon
 
 
 ## References:
-https://www.r-spatial.org/r/2019/07/18/gdalcubes1.html
-Appel, M., & Pebesma, E. (2019). On-Demand Processing of Data Cubes from Satellite Image Collections with the gdalcubes Library. Data, 4(3), 92. https://doi.org/10.3390/data4030092
+
+- https://www.r-spatial.org/r/2019/07/18/gdalcubes1.html
+
+- Appel, M., & Pebesma, E. (2019). On-Demand Processing of Data Cubes from Satellite Image Collections with the gdalcubes Library. Data, 4(3), 92. https://doi.org/10.3390/data4030092
 
