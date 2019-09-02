@@ -16,7 +16,7 @@ The tutorial will introduce the basic concepts and usage of the R package, demon
 
 ## Links
 
-- [Slides]() of plenary presentation
+- [Slides](https://github.com/appelmar/opengeohub_summerschool2019/blob/master/plenary_slides.pdf) of plenary presentation
 - [Workshop Notebook](https://appelmar.github.io/opengeohub_summerschool2019/tutorial.html)
 - [Exercise Solutions](https://github.com/appelmar/opengeohub_summerschool2019/blob/master/solutions.R)
 
